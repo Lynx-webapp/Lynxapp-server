@@ -1,0 +1,30 @@
+{
+  "name": "speakjs-server",
+  "version": "1.0.1",
+  "description": "speak chiffré en js...",
+  "main": "server.js",
+  "dependencies": {
+    "cryptr": "^6.0.2",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.10",
+    "ws": "^7.4.5"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NotPunchnox/speakjs-server.git"
+  },
+  "keywords": [
+    "speak",
+    "speakjs",
+    "punchnox"
+  ],
+  "author": "punchnox",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NotPunchnox/speakjs-server/issues"
+  },
+  "homepage": "https://github.com/NotPunchnox/speakjs-server#readme"
+}
