@@ -30,8 +30,7 @@ const config = {
   password: null,
   username: null
 }
-
-mongoose.connect(`mongodb+srv://lynxapp:<password>@cluster0.9u5ne.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, {
+mongoose.connect(`mongodb+srv://lynxapp:passwordlynxsécurisé@cluster0.9u5ne.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
