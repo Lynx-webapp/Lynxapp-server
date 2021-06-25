@@ -4,7 +4,6 @@ ws = require('ws'),
 wss = new ws.Server({
   server
 }),
-cryptr = require('cryptr'),
 mongoose = require('mongoose')
 welcome = function(a) {
   let b = [
@@ -30,7 +29,7 @@ const config = {
   password: null,
   username: null
 }
-mongoose.connect(`mongodb+srv://lynxapp:QngQ4Oms9NLfs0T9@cluster0.9u5ne.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, {
+mongoose.connect(`mongodb+srv://lynxapp:QngQ4Oms9NLfs0T9@cluster0.9u5ne.mongodb.net/lynxdb-test?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -47,7 +46,6 @@ app.use(require('body-parser').urlencoded({
 const ModalMessage = mongoose.model('messages', {
   username: String,
   content: String,
-  expire: Number,
   color: String,
   avatar: String,
   CreatedAt: String
@@ -66,20 +64,9 @@ app.get('/message', (req, res)=> {
         users: wss.clients.size,
         number: d.length || 0,
         msg: d
-      }),
-    d.forEach(a=> {
-      if (a.expire < Date.now()) {
-        ModalMessage.findOne({
-          expire: a.expire
-        }).exec((err, doc)=> {
-          if (e) return new Error(e)
-          if (!doc) return new Error('Missing document!')
-          doc.remove()
+      })
         })
       }
-    })
-  })
-})
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
@@ -100,36 +87,31 @@ wss.on('connection', function connection(ws) {
         var color = d.color,
             avatar = d.avatar
         }
-      var ch = Date.now() + 1800000
       if (m.event === 'msg') {
         console.log(avatar)
         new ModalMessage({
           username: m.username,
-          content: new cryptr(String(ch)).encrypt(new cryptr(String(m.expire)).decrypt(m.content)),
+          content: m.content,
           color: color,
           avatar: avatar || `https://api.multiavatar.com/${m.username}.svg`,
-          expire: ch,
           CreatedAt: new Date().getUTCHours() + ':' + new Date().getUTCMinutes() + ":" + new Date().getUTCSeconds()
         }).save((e, r)=> {
           if (e) return new Error(e)
         })
       }
       wss.clients.forEach(function each(client) {
-        var ch = Date.now() + 1800000 / 2.3 * 5
         ws.on('close', () => {
           return client.send(JSON.stringify({
-            expire: ch,
             event: 'leave',
-            content: new cryptr(String(ch)).encrypt(m.username + ' a quitté le groupe.'),
+            content: `${m.username} a quitté le groupe.`,
             username: 'Lynxou',
             color: '#42f6da',
             date: new Date().getUTCHours() + ':' + new Date().getUTCMinutes() + ":" + new Date().getUTCSeconds()
           }))
         })
         if (m.event === 'new') return client.send(JSON.stringify({
-          expire: ch, 
           event: m.event,
-          content: new cryptr(String(ch)).encrypt(welcome(m.username)),
+          content: welcome(m.username),
           user: m.username,
           avatar: avatar,
           username: 'Lynxou',
@@ -139,8 +121,7 @@ wss.on('connection', function connection(ws) {
         if (m.event === 'msg') return client.send(JSON.stringify({
           date: new Date().getUTCHours() + ':' + new Date().getUTCMinutes() + ":" + new Date().getUTCSeconds(),
           username: m.username,
-          content: new cryptr(String(ch)).encrypt(new cryptr(String(m.expire)).decrypt(m.content)),
-          expire: ch,
+          content: m.content,
           event: m.event,
           avatar: avatar,
           color: color
