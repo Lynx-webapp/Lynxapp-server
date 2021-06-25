@@ -65,8 +65,8 @@ app.get('/message', (req, res)=> {
         number: d.length || 0,
         msg: d
       })
-        })
-      }
+  })
+})
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
@@ -87,6 +87,7 @@ wss.on('connection', function connection(ws) {
         var color = d.color,
             avatar = d.avatar
         }
+      var ch = Date.now() + 1800000
       if (m.event === 'msg') {
         console.log(avatar)
         new ModalMessage({
@@ -100,10 +101,11 @@ wss.on('connection', function connection(ws) {
         })
       }
       wss.clients.forEach(function each(client) {
+        var ch = Date.now() + 1800000 / 2.3 * 5
         ws.on('close', () => {
           return client.send(JSON.stringify({
             event: 'leave',
-            content: `${m.username} a quitté le groupe.`,
+            content: m.username + ' a quitté le groupe.',
             username: 'Lynxou',
             color: '#42f6da',
             date: new Date().getUTCHours() + ':' + new Date().getUTCMinutes() + ":" + new Date().getUTCSeconds()
