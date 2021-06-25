@@ -2,6 +2,6 @@
 
 ## To do
 
-[X] Messages
-[ ] Guilds
-[ ] Channels
+- [X] Messages
+- [ ] Guilds
+- [ ] Channels
